@@ -1,9 +1,17 @@
+// Custom Hooks
+import { useFetch } from './hooks/useFetch';
+
 // Components
 import Header from './components/Header';
 import Main from './components/Main';
 
+// url of the fake API that's been created with json-server
+const url = 'http://localhost:5000/questions';
+
 // The main app that will be rendered in the browser
 function App() {
+  useFetch(url);
+
   return (
     <div className='app'>
       <Header />
