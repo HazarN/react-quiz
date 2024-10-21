@@ -25,16 +25,25 @@ function reducer(state, action) {
     case 'start':
       return { ...state, status: 'active' };
     case 'newAnswer':
-      return { ...state, answer: action.payload };
+      const currentQuestion = state.questions.at(state.index);
+
+      return {
+        ...state,
+        answer: action.payload,
+        score:
+          action.payload === currentQuestion.correctOption
+            ? state.score + currentQuestion.points
+            : state.score,
+      };
     default:
       throw new Error('Action does not exist! (HazarN)');
   }
 }
 const initialState = {
-  // Can be: loading, error, ready, active, finished
-  status: 'loading',
+  status: 'loading', // Can be: loading, error, ready, active, finished
   questions: [],
   index: 0,
+  score: 0,
   answer: null,
 };
 
