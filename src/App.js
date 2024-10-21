@@ -4,6 +4,7 @@ import { useEffect, useReducer } from 'react';
 // Components
 import Header from './components/Header';
 import Main from './components/Main';
+import Footer from './components/Footer';
 import StartScreen from './components/StartScreen';
 import LoadingScreen from './components/LoadingScreen';
 import ErrorMessage from './components/ErrorMessage';
@@ -11,9 +12,10 @@ import Question from './components/Question';
 import NextButton from './components/NextButton';
 import Progress from './components/Progress';
 import FinishScreen from './components/FinishScreen';
+import Timer from './components/Timer';
 
-// URL of the fake API that's been created with json-server
-const url = 'http://localhost:5000/questions';
+const url = 'http://localhost:5000/questions'; // URL of the fake API that's been created with json-server
+const SECS_PER_QUESTION = 30;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -26,7 +28,11 @@ function reducer(state, action) {
     case 'dataFailed':
       return { ...state, status: 'error' };
     case 'start':
-      return { ...state, status: 'active' };
+      return {
+        ...state,
+        status: 'active',
+        secondsRemaining: 10 /* state.questions.length * SECS_PER_QUESTION */,
+      };
     case 'newAnswer':
       const currentQuestion = state.questions.at(state.index);
 
@@ -51,6 +57,12 @@ function reducer(state, action) {
         highscore:
           state.score > state.highscore ? state.score : state.highscore,
       };
+    case 'tick':
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 1 ? 'finished' : state.status,
+      };
     case 'restart':
       return { ...initialState, questions: state.questions, status: 'ready' };
     default:
@@ -64,12 +76,15 @@ const initialState = {
   score: 0,
   highscore: 0,
   answer: null,
+  secondsRemaining: null,
 };
 
 // The main app that will be rendered in the browser
 function App() {
-  const [{ questions, status, index, answer, score, highscore }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { questions, status, index, answer, score, highscore, secondsRemaining },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   const numOfQuestions = questions.length;
   const maxScore = questions
     .map(question => question.points)
@@ -106,12 +121,16 @@ function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton
-              dispatch={dispatch}
-              index={index}
-              numOfQuestions={numOfQuestions}
-              answer={answer}
-            />
+
+            <Footer>
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+              <NextButton
+                dispatch={dispatch}
+                index={index}
+                numOfQuestions={numOfQuestions}
+                answer={answer}
+              />
+            </Footer>
           </>
         )}
         {status === 'finished' && (
