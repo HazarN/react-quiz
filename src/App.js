@@ -8,6 +8,9 @@ import StartScreen from './components/StartScreen';
 import LoadingScreen from './components/LoadingScreen';
 import ErrorMessage from './components/ErrorMessage';
 import Question from './components/Question';
+import NextButton from './components/NextButton';
+import Progress from './components/Progress';
+import FinishScreen from './components/FinishScreen';
 
 // URL of the fake API that's been created with json-server
 const url = 'http://localhost:5000/questions';
@@ -35,6 +38,21 @@ function reducer(state, action) {
             ? state.score + currentQuestion.points
             : state.score,
       };
+    case 'nextQuestion':
+      return {
+        ...state,
+        answer: null,
+        index: state.index++,
+      };
+    case 'finished':
+      return {
+        ...state,
+        status: 'finished',
+        highscore:
+          state.score > state.highscore ? state.score : state.highscore,
+      };
+    case 'restart':
+      return { ...initialState, questions: state.questions, status: 'ready' };
     default:
       throw new Error('Action does not exist! (HazarN)');
   }
@@ -44,16 +62,18 @@ const initialState = {
   questions: [],
   index: 0,
   score: 0,
+  highscore: 0,
   answer: null,
 };
 
 // The main app that will be rendered in the browser
 function App() {
-  const [{ questions, status, index, answer }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ questions, status, index, answer, score, highscore }, dispatch] =
+    useReducer(reducer, initialState);
   const numOfQuestions = questions.length;
+  const maxScore = questions
+    .map(question => question.points)
+    .reduce((acc, point) => acc + point, 0);
 
   // Fetching on mount
   useEffect(() => {
@@ -74,10 +94,32 @@ function App() {
           <StartScreen numOfQuestions={numOfQuestions} dispatch={dispatch} />
         )}
         {status === 'active' && (
-          <Question
-            question={questions[index]}
+          <>
+            <Progress
+              index={index}
+              numOfQuestions={numOfQuestions}
+              score={score}
+              maxScore={maxScore}
+            />
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+            <NextButton
+              dispatch={dispatch}
+              index={index}
+              numOfQuestions={numOfQuestions}
+              answer={answer}
+            />
+          </>
+        )}
+        {status === 'finished' && (
+          <FinishScreen
             dispatch={dispatch}
-            answer={answer}
+            score={score}
+            maxScore={maxScore}
+            highscore={highscore}
           />
         )}
       </Main>
