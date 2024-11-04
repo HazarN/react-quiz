@@ -1,6 +1,9 @@
 // Libs
 import { useEffect, useReducer } from 'react';
 
+// Contexts
+import { QuizProvider, useQuizContext } from './contexts/QuizContext';
+
 // Components
 import Header from './components/Header';
 import Main from './components/Main';
@@ -13,7 +16,6 @@ import NextButton from './components/NextButton';
 import Progress from './components/Progress';
 import FinishScreen from './components/FinishScreen';
 import Timer from './components/Timer';
-import { QuizProvider, useQuizContext } from './contexts/QuizContext';
 
 // The main app that will be rendered in the browser
 function App() {
