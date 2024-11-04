@@ -1,4 +1,8 @@
-function NextButton({ dispatch, index, numOfQuestions, answer }) {
+import { useQuizContext } from '../contexts/QuizContext';
+
+function NextButton() {
+  const { dispatch, index, numOfQuestions, answer } = useQuizContext();
+
   if (answer === null) return;
 
   // Middle question
