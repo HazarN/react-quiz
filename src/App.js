@@ -31,7 +31,7 @@ function reducer(state, action) {
       return {
         ...state,
         status: 'active',
-        secondsRemaining: 10 /* state.questions.length * SECS_PER_QUESTION */,
+        secondsRemaining: state.questions.length * SECS_PER_QUESTION,
       };
     case 'newAnswer':
       const currentQuestion = state.questions.at(state.index);
