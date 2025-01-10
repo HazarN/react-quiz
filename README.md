@@ -28,25 +28,25 @@ Before you begin, ensure you have the following installed:
 ## Installation
 
 1. Clone the repository:
-_bashhere_
+```
 git clone [your-repository-url]
 cd react-quiz
-_bashhere_
+```
 
-2. Install dependencies:
-_bashhere_
+3. Install dependencies:
+```
 npm install
-_bashhere_
+```
 
-3. Start the JSON server (mock API):
-_bashhere_
+4. Start the JSON server (mock API):
+```
 npm run server
-_bashhere_
+```
 
-4. Start the development server:
-_bashhere_
+5. Start the development server:
+```
 npm run dev
-_bashhere_
+```
 
 The application will be available at `http://localhost:3000`
 
